@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLB Japan — Japanese MLB Fan Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#CC1818;--gold:#1856C8;--navy:#FFFFFF;--navy-mid:#EEF2FB;
+    --navy-card:#FFFFFF;--navy-border:#D0DCF2;--white:#0A1A3A;--muted:#5E729A;
+    --font-display:'Bebas Neue',sans-serif;--font-jp:'Noto Sans JP',sans-serif;--font-body:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#F4F7FF;color:var(--white);font-family:var(--font-body);min-height:100vh;}
+  a{color:inherit;text-decoration:none;}
+
+  /* TICKER */
+  .ticker{background:var(--red);padding:5px 0;overflow:hidden;white-space:nowrap;}
+  .ticker-inner{display:inline-block;animation:scroll 70s linear infinite;}
+  .ticker-inner span{font-family:var(--font-jp);font-size:11px;font-weight:700;padding:0 20px;}
+  .ticker-inner span::before{content:'⚾ ';}
+  @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+  /* HEADER */
+  header{background:#FFF;border-bottom:1px solid var(--navy-border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(10,26,58,0.08);}
+  .logo{display:flex;align-items:baseline;gap:8px;}
+  .logo-en{font-family:var(--font-display);font-size:26px;color:var(--white);letter-spacing:2px;}
+  .logo-jp{font-family:var(--font-jp);font-size:11px;color:var(--muted);}
+  .logo-dot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;margin-right:4px;}
+  nav{display:flex;gap:20px;}
+  nav a{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0.05em;transition:color 0.2s;}
+  nav a:hover{color:var(--white);}
+  nav a.active{color:var(--red);}
+  .lang-toggle{display:flex;gap:3px;background:#EEF2FB;border-radius:6px;padding:3px;}
+  .lang-btn{padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;}
+  .lang-btn.active{background:var(--red);color:white;}
+
+  /* REFRESH BAR */
+  .refresh-bar{background:#FFF;border-bottom:1px solid var(--navy-border);padding:5px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .refresh-status{display:flex;align-items:center;gap:8px;font-family:var(--font-jp);font-size:10px;color:var(--muted);}
+  .refresh-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;flex-shrink:0;}
+  .refresh-dot.loading{width:9px;height:9px;border:2px solid #1856C8;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;background:transparent;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .refresh-countdown{font-family:var(--font-display);font-size:13px;color:#1856C8;letter-spacing:1px;}
+  .refresh-btn{background:transparent;border:1px solid var(--navy-border);color:var(--muted);font-family:var(--font-jp);font-size:10px;padding:3px 10px;border-radius:5px;cursor:pointer;transition:all 0.2s;}
+  .refresh-btn:hover{border-color:var(--red);color:var(--white);}
+
+  /* AD PLACEHOLDER */
+  .ad-placeholder{background:#F4F7FF;border:2px dashed #C8D6EE;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#AAB8D0;font-size:10px;font-family:var(--font-jp);letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:border-color 0.2s;}
+  .ad-placeholder:hover{border-color:#9ABAEE;color:#8899BB;}
+  .ad-placeholder-leaderboard{height:56px;margin-bottom:22px;}
+  .ad-placeholder-sidebar{min-height:130px;}
+
+  /* HERO — compact strip */
+  .hero{background:linear-gradient(135deg,#0A1A3A 0%,#1040A0 100%);padding:0 24px;display:flex;align-items:center;justify-content:space-between;min-height:140px;border-bottom:1px solid var(--navy-border);overflow:hidden;}
+  .hero-content{display:flex;flex-direction:column;gap:6px;}
+  .hero-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-jp);font-size:10px;color:#7AADFF;font-weight:700;letter-spacing:0.15em;}
+  .hero-tag::before{content:'';display:inline-block;width:14px;height:2px;background:#7AADFF;}
+  .hero-title{font-family:var(--font-display);font-size:38px;line-height:0.95;letter-spacing:1px;color:#FFF;}
+  .hero-title .accent{color:#FF6B6B;}
+  .hero-subtitle{font-family:var(--font-jp);font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;max-width:340px;}
+  .hero-stats{display:flex;gap:24px;margin-top:4px;}
+  .hero-stat{display:flex;flex-direction:column;gap:1px;}
+  .hero-stat-num{font-family:var(--font-display);font-size:24px;color:#FFF;line-height:1;}
+  .hero-stat-label{font-family:var(--font-jp);font-size:9px;color:rgba(255,255,255,0.5);}
+  .hero-players{display:flex;gap:0;height:140px;}
+  .hero-player-card{width:110px;background:rgba(255,255,255,0.07);border-left:1px solid rgba(255,255,255,0.1);padding:12px 10px;display:flex;flex-direction:column;gap:3px;cursor:pointer;transition:background 0.2s;}
+  .hero-player-card:hover{background:rgba(255,255,255,0.13);}
+  .hero-player-card.featured{border-top:2px solid #FF6B6B;}
+  .hero-player-num{font-family:var(--font-display);font-size:28px;color:rgba(255,255,255,0.1);line-height:1;}
+  .hero-player-name-jp{font-family:var(--font-jp);font-size:12px;font-weight:900;color:#FFF;line-height:1.2;}
+  .hero-player-name-en{font-size:8px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;}
+  .hero-player-team{display:inline-block;margin-top:2px;background:#FF6B6B;color:white;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;}
+  .hero-player-stat{margin-top:auto;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1);}
+  .hero-player-stat-val{font-family:var(--font-display);font-size:16px;color:#FFD97A;}
+  .hero-player-stat-key{font-size:8px;color:rgba(255,255,255,0.45);text-transform:uppercase;}
+
+  /* MAIN */
+  .main{max-width:1280px;margin:0 auto;padding:22px 24px;display:grid;grid-template-columns:1fr 288px;gap:24px;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .section-title{display:flex;align-items:center;gap:10px;}
+  .section-bar{width:3px;height:18px;background:var(--red);border-radius:2px;}
+  .section-title-en{font-family:var(--font-display);font-size:19px;letter-spacing:1px;color:#0A1A3A;}
+  .section-title-jp{font-family:var(--font-jp);font-size:10px;color:var(--muted);}
+  .see-all{font-size:11px;color:var(--red);font-weight:500;cursor:pointer;}
+
+  /* SCORES */
+  .scores-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:22px;}
+  .score-card{background:#FFF;border:1px solid var(--navy-border);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;transition:border-color 0.2s;box-shadow:0 1px 4px rgba(10,26,58,0.04);}
+  .score-card:hover{border-color:#9ABAEE;}
+  .score-card.highlight{border-left:3px solid var(--red);}
+  .score-team{display:flex;align-items:center;gap:8px;}
+  .score-team.away{flex-direction:row-reverse;text-align:right;}
+  .team-abbr{font-family:var(--font-display);font-size:18px;letter-spacing:1px;min-width:34px;color:var(--white);}
+  .team-name-sc{font-family:var(--font-jp);font-size:9px;color:var(--muted);line-height:1.4;}
+  .score-mid{display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .score-nums{display:flex;align-items:center;gap:8px;}
+  .score-num{font-family:var(--font-display);font-size:22px;min-width:20px;text-align:center;color:var(--white);}
+  .score-sep{color:#C0CEEA;font-size:14px;}
+  .score-status{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);}
+  .score-time-jp{font-family:var(--font-jp);font-size:8px;color:var(--muted);}
+  .jp-note{font-size:8px;color:var(--red);font-weight:700;margin-top:1px;}
+  .scores-empty{padding:20px;text-align:center;font-family:var(--font-jp);font-size:13px;color:var(--muted);background:#FFF;border:1px solid var(--navy-border);border-radius:8px;}
+
+  /* PLAYER CARDS */
+  .players-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+  .player-card{background:#FFF;border:1px solid var(--navy-border);border-radius:10px;overflow:hidden;transition:all 0.2s;display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(10,26,58,0.05);}
+  .player-card:hover{border-color:#9ABAEE;transform:translateY(-2px);box-shadow:0 6px 20px rgba(10,26,58,0.1);}
+  .player-card.new-2026{outline:1px solid #F0A020;outline-offset:-1px;}
+  .player-card-header{padding:12px 11px 9px;position:relative;overflow:hidden;}
+  .player-card-header::after{content:attr(data-num);position:absolute;right:-6px;top:-6px;font-family:var(--font-display);font-size:54px;color:rgba(255,255,255,0.08);line-height:1;pointer-events:none;}
+  .header-stripe{position:absolute;top:0;left:0;right:0;height:3px;}
+  .player-position{font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;opacity:0.85;}
+  .player-name-jp{font-family:var(--font-jp);font-size:14px;font-weight:900;color:#fff;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,0.4);}
+  .player-name-en{font-size:8px;color:rgba(255,255,255,0.5);margin-top:2px;letter-spacing:0.05em;}
+  .player-team-badge{display:inline-block;margin-top:5px;padding:2px 7px;border-radius:3px;font-size:8px;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,0.22);background:rgba(255,255,255,0.1);}
+  .new-badge{display:inline-block;margin-left:4px;padding:1px 4px;border-radius:3px;font-size:7px;font-weight:700;background:rgba(220,120,0,0.15);color:#C07000;border:1px solid rgba(220,120,0,0.3);vertical-align:middle;}
+  .player-card-stats{padding:8px 11px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-top:1px solid var(--navy-border);background:#F8FAFF;}
+  .player-stat-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .player-stat-val{font-family:var(--font-display);font-size:16px;color:#1856C8;}
+  .player-stat-key{font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-jp);}
+  .highlights-section{border-top:1px solid var(--navy-border);background:#F8FAFF;}
+  .highlights-toggle{width:100%;background:transparent;border:none;color:var(--muted);font-size:9px;font-weight:700;cursor:pointer;font-family:var(--font-jp);padding:6px 11px;display:flex;align-items:center;justify-content:space-between;transition:color 0.2s;}
+  .highlights-toggle:hover{color:#0A1A3A;}
+  .highlights-toggle .yt-icon{color:#FF0000;font-size:10px;}
+  .highlights-toggle .toggle-arrow{transition:transform 0.2s;font-size:7px;}
+  .highlights-toggle.open .toggle-arrow{transform:rotate(180deg);}
+  .highlights-links{display:none;flex-direction:column;gap:3px;padding:0 8px 7px;}
+  .highlights-links.open{display:flex;}
+  .hl-group-label{font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px 2px;margin:0 0 2px;border-radius:3px;}
+  .player-hl-label{color:#1856C8;background:rgba(24,86,200,0.07);}
+  .team-hl-label{color:#5E729A;background:rgba(94,114,154,0.07);}
+  .highlight-link{display:flex;align-items:center;gap:6px;padding:4px 7px;border-radius:4px;background:rgba(255,0,0,0.04);border:1px solid rgba(255,0,0,0.1);font-family:var(--font-jp);font-size:9px;color:#334477;transition:all 0.15s;text-decoration:none;}
+  .highlight-link:hover{background:rgba(255,0,0,0.09);border-color:rgba(255,0,0,0.28);color:#CC1818;}
+  .highlight-link .yt{color:#FF0000;font-size:10px;flex-shrink:0;}
+  .player-follow-btn{display:block;width:100%;padding:7px;background:#F4F7FF;border:none;border-top:1px solid var(--navy-border);color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:var(--font-jp);margin-top:auto;}
+  .player-follow-btn:hover{background:rgba(204,24,24,0.07);color:var(--red);}
+  .player-follow-btn.following{color:var(--red);background:rgba(204,24,24,0.05);}
+  .skeleton-card{background:#FFF;border:1px solid var(--navy-border);border-radius:10px;overflow:hidden;min-height:160px;}
+  .skeleton-pulse{background:linear-gradient(90deg,#F0F4FF 25%,#E4ECFF 50%,#F0F4FF 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+  @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+  .player-section{margin-bottom:26px;}
+  .player-section-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:9px 13px;background:#FFF;border:1px solid var(--navy-border);border-radius:8px;box-shadow:0 1px 3px rgba(10,26,58,0.04);}
+  .player-section-icon{font-size:16px;}
+  .player-section-title-en{font-family:var(--font-display);font-size:20px;letter-spacing:2px;color:var(--white);}
+  .player-section-title-jp{font-family:var(--font-jp);font-size:10px;color:var(--muted);}
+  .player-section-badge{margin-left:auto;background:var(--red);color:white;font-family:var(--font-display);font-size:15px;padding:2px 9px;border-radius:20px;letter-spacing:1px;}
+
+  /* SCHEDULE */
+  .schedule-list{display:flex;flex-direction:column;gap:5px;margin-bottom:22px;}
+  .schedule-item{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:10px;padding:9px 12px;background:#FFF;border:1px solid var(--navy-border);border-radius:7px;box-shadow:0 1px 3px rgba(10,26,58,0.03);}
+  .schedule-time{font-family:var(--font-display);font-size:14px;color:var(--muted);}
+  .schedule-time small{display:block;font-family:var(--font-jp);font-size:8px;color:#B0BEDC;font-weight:400;}
+  .schedule-matchup{font-family:var(--font-jp);font-size:12px;font-weight:700;color:var(--white);}
+  .schedule-matchup small{display:block;font-size:9px;color:var(--muted);font-weight:400;margin-top:1px;}
+  .schedule-flag{background:rgba(204,24,24,0.08);border:1px solid rgba(204,24,24,0.18);color:var(--red);font-size:8px;font-weight:700;padding:3px 7px;border-radius:3px;font-family:var(--font-jp);white-space:nowrap;}
+
+  /* SIDEBAR */
+  .sidebar{display:flex;flex-direction:column;gap:16px;}
+  .sidebar-widget{background:#FFF;border:1px solid var(--navy-border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(10,26,58,0.05);}
+  .widget-header{padding:10px 13px;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;justify-content:space-between;background:#F8FAFF;}
+  .widget-title{font-family:var(--font-jp);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;color:var(--white);}
+  .widget-title::before{content:'';display:inline-block;width:3px;height:12px;background:var(--red);border-radius:2px;}
+  .news-item{padding:9px 13px;border-bottom:1px solid var(--navy-border);cursor:pointer;transition:background 0.15s;}
+  .news-item:last-child{border-bottom:none;}
+  .news-item:hover{background:#F4F7FF;}
+  .news-tag{font-size:8px;font-weight:700;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+  .news-headline{font-family:var(--font-jp);font-size:11px;color:var(--white);line-height:1.5;font-weight:700;}
+  .news-time{font-size:9px;color:var(--muted);margin-top:2px;}
+
+  /* STANDINGS — all divisions with tabs */
+  .standings-tabs{display:flex;border-bottom:1px solid var(--navy-border);background:#F8FAFF;}
+  .standings-tab{flex:1;padding:7px 4px;font-family:var(--font-jp);font-size:9px;font-weight:700;color:var(--muted);text-align:center;cursor:pointer;border:none;background:transparent;transition:all 0.15s;border-bottom:2px solid transparent;}
+  .standings-tab.active{color:var(--red);border-bottom-color:var(--red);}
+  .standings-tab:hover{color:var(--white);}
+  .standings-panel{display:none;}
+  .standings-panel.active{display:block;}
+  .standings-table{width:100%;border-collapse:collapse;}
+  .standings-table td,.standings-table th{padding:5px 10px;font-size:10px;border-bottom:1px solid var(--navy-border);color:var(--white);}
+  .standings-table th{color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;font-weight:500;background:#F4F7FF;}
+  .standings-table td:last-child,.standings-table th:last-child{text-align:right;}
+  .rank{font-family:var(--font-display);font-size:13px;color:var(--muted);}
+  .rank.top{color:#1856C8;}
+  .win-pct{color:#1856C8;font-weight:600;}
+  .jp-flag{display:inline-block;width:10px;height:7px;background:white;border:1px solid #DDD;border-radius:1px;margin-left:2px;position:relative;overflow:hidden;vertical-align:middle;}
+  .jp-flag::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,#DC1C1C 33%,transparent 33%);}
+  .standings-note{padding:7px 10px;font-size:8px;color:var(--muted);font-family:var(--font-jp);}
+
+  /* TEAM LEGEND */
+  .team-legend{display:flex;flex-wrap:wrap;gap:4px;padding:10px 11px;}
+  .team-pill{display:flex;align-items:center;gap:4px;background:#F4F7FF;border:1px solid var(--navy-border);border-radius:20px;padding:3px 8px;font-size:9px;cursor:pointer;transition:all 0.15s;font-family:var(--font-jp);color:var(--white);}
+  .team-pill:hover{border-color:var(--red);background:#FFF0F0;}
+  .team-dot{width:6px;height:6px;border-radius:50%;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:20px;right:20px;background:#FFF;border:1px solid var(--navy-border);border-left:3px solid #22c55e;color:var(--white);font-family:var(--font-jp);font-size:12px;padding:10px 16px;border-radius:8px;box-shadow:0 6px 24px rgba(10,26,58,0.15);z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  /* FOOTER */
+  footer{background:#0A1A3A;border-top:1px solid #1A3060;padding:22px 24px;margin-top:22px;}
+  .footer-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+  .footer-logo{font-family:var(--font-display);font-size:18px;letter-spacing:2px;color:rgba(255,255,255,0.35);}
+  .footer-links{display:flex;gap:16px;}
+  .footer-links a{font-family:var(--font-jp);font-size:10px;color:rgba(255,255,255,0.35);transition:color 0.2s;}
+  .footer-links a:hover{color:rgba(255,255,255,0.75);}
+  .footer-legal{font-family:var(--font-jp);font-size:9px;color:rgba(255,255,255,0.22);max-width:1280px;margin:10px auto 0;border-top:1px solid #1A3060;padding-top:10px;}
+
+  /* RESPONSIVE */
+  @media(max-width:1100px){.players-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:900px){.hero{flex-direction:column;min-height:unset;}.hero-players{display:none;}.main{grid-template-columns:1fr;}.players-grid{grid-template-columns:repeat(2,1fr);}nav{display:none;}}
+  @media(max-width:600px){
+    header{height:44px;padding:0 12px;}.logo-en{font-size:20px;}.logo-jp{display:none;}
+    .lang-btn{padding:2px 7px;font-size:10px;}#notifyBtn{padding:4px 8px;font-size:10px;}
+    .refresh-bar{padding:4px 12px;}.refresh-bar #refreshStatusText{display:none;}.refresh-bar #nextUpdateLabel{display:none;}
+    .hero{min-height:110px;padding:0 14px;}.hero-title{font-size:28px;}.hero-subtitle{display:none;}.hero-stats{gap:16px;}.hero-stat-num{font-size:20px;}
+    .players-grid{grid-template-columns:1fr;}
+    .main{padding:14px 12px;gap:16px;}
+    .schedule-item{grid-template-columns:52px 1fr auto;gap:8px;padding:7px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner" id="tickerInner">
+  <span>データ読み込み中...</span><span>Loading stats...</span>
+</div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo"><span class="logo-dot"></span><span class="logo-en">MLB JAPAN</span><span class="logo-jp" id="logoSubtitle">日本語メジャーリーグ情報</span></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="switchLanguage('jp')">日本語</button>
+      <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+    </div>
+    <button id="notifyBtn" onclick="alert(currentLang==='en'?'Notifications enabled!':'通知を登録しました！')" style="background:var(--red);border:none;color:white;padding:5px 11px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-jp);">🔔 通知</button>
+  </div>
+</header>
+
+<!-- REFRESH BAR -->
+<div class="refresh-bar">
+  <div class="refresh-status">
+    <div class="refresh-dot" id="refreshDot"></div>
+    <span id="refreshStatusText">ライブデータ取得中</span>
+    <span style="font-size:9px;color:#9aaacb;" id="lastUpdatedText">最終更新: —</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="font-family:var(--font-jp);font-size:9px;color:var(--muted);"><span id="nextUpdateLabel">次回更新まで: </span><span class="refresh-countdown" id="countdownEl">60:00</span></div>
+    <button class="refresh-btn" id="refreshBtn" onclick="triggerRefresh()">⟳ 今すぐ更新</button>
+  </div>
+</div>
+
+<!-- HERO — compact strip -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-tag" id="heroTag">2026 MLBシーズン</div>
+    <div class="hero-title">日本人<span class="accent" id="heroPlayerCount">14</span>名<br>MLB在籍</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-num" id="heroTotal">14</span><span class="hero-stat-label" id="heroLabel0">日本人選手</span></div>
+      <div class="hero-stat"><span class="hero-stat-num" id="heroNew">3</span><span class="hero-stat-label" id="heroLabel1">2026新加入</span></div>
+      <div class="hero-stat"><span class="hero-stat-num" id="heroTeams">10</span><span class="hero-stat-label" id="heroLabel2">所属チーム</span></div>
+    </div>
+  </div>
+  <div class="hero-players">
+    <div class="hero-player-card featured">
+      <div class="hero-player-num">17</div><div class="hero-player-name-jp">大谷 翔平</div>
+      <div class="hero-player-name-en">SHOHEI OHTANI</div><div class="hero-player-team">LAD · DH</div>
+      <div class="hero-player-stat"><div class="hero-player-stat-val" id="heroOhtaniStat">—</div><div class="hero-player-stat-key">AVG</div></div>
+    </div>
+    <div class="hero-player-card">
+      <div class="hero-player-num">18</div><div class="hero-player-name-jp">山本 由伸</div>
+      <div class="hero-player-name-en">Y. YAMAMOTO</div><div class="hero-player-team">LAD · SP</div>
+      <div class="hero-player-stat"><div class="hero-player-stat-val" id="heroYamamotoStat">—</div><div class="hero-player-stat-key">ERA</div></div>
+    </div>
+    <div class="hero-player-card" style="border-top:2px solid #FFD97A;">
+      <div class="hero-player-num">5</div><div class="hero-player-name-jp">村上 宗隆</div>
+      <div class="hero-player-name-en">M. MURAKAMI</div><div class="hero-player-team">CWS · 1B</div>
+      <div class="hero-player-stat"><div class="hero-player-stat-val" id="heroMurakamiStat">—</div><div class="hero-player-stat-key">AVG</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="content">
+
+    <!-- AD LEADERBOARD PLACEHOLDER -->
+    <div class="ad-placeholder ad-placeholder-leaderboard" onclick="alert('広告掲載のお問い合わせ: ads@mlb-international.com')">
+      広告スペース — Advertisement Space
+    </div>
+
+    <!-- SCORES -->
+    <div class="section-header">
+      <div class="section-title"><div class="section-bar"></div><div><div class="section-title-en" id="sectionScoresEN">TODAY'S SCORES</div><div class="section-title-jp" id="sectionScoresJP">日本人チームの本日スコア</div></div></div>
+    </div>
+    <div class="scores-grid" id="scoresGrid">
+      <div class="skeleton-card skeleton-pulse" style="height:56px;border-radius:8px;"></div>
+      <div class="skeleton-card skeleton-pulse" style="height:56px;border-radius:8px;"></div>
+      <div class="skeleton-card skeleton-pulse" style="height:56px;border-radius:8px;"></div>
+    </div>
+
+    <!-- PLAYERS -->
+    <div class="section-header">
+      <div class="section-title"><div class="section-bar"></div><div><div class="section-title-en" id="sectionPlayersEN">JAPANESE PLAYERS 2026</div><div class="section-title-jp" id="sectionPlayersJP">MLB在籍 日本人選手 全<span id="totalPlayerCountLabel">14</span>名</div></div></div>
+    </div>
+    <div id="playersContainer">
+      <div class="player-section-header" style="margin-bottom:12px;">
+        <span class="player-section-icon">⚾</span>
+        <div><div class="player-section-title-en">LOADING...</div><div class="player-section-title-jp">データ取得中</div></div>
+      </div>
+      <div class="players-grid">
+        <div class="skeleton-card skeleton-pulse"></div><div class="skeleton-card skeleton-pulse"></div>
+        <div class="skeleton-card skeleton-pulse"></div><div class="skeleton-card skeleton-pulse"></div>
+        <div class="skeleton-card skeleton-pulse"></div><div class="skeleton-card skeleton-pulse"></div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="section-header">
+      <div class="section-title"><div class="section-bar"></div><div><div class="section-title-en" id="sectionGamesEN">UPCOMING GAMES</div><div class="section-title-jp" id="sectionGamesJP">注目の試合日程（JST）</div></div></div>
+    </div>
+    <div class="schedule-list" id="scheduleList">
+      <div class="skeleton-card skeleton-pulse" style="height:50px;border-radius:7px;"></div>
+      <div class="skeleton-card skeleton-pulse" style="height:50px;border-radius:7px;"></div>
+      <div class="skeleton-card skeleton-pulse" style="height:50px;border-radius:7px;"></div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- AD SIDEBAR PLACEHOLDER -->
+    <div class="ad-placeholder ad-placeholder-sidebar" onclick="alert('広告掲載のお問い合わせ: ads@mlb-international.com')">
+      広告スペース<br>Advertisement Space
+    </div>
+
+    <!-- NEWS -->
+    <div class="sidebar-widget">
+      <div class="widget-header"><div class="widget-title" id="newsWidgetTitle">最新ニュース</div></div>
+      <div id="newsWidget">
+        <div class="news-item"><div class="news-tag">岡本和真</div><div class="news-headline">岡本、MLB初本塁打！420フィートの特大アーチ</div><div class="news-time">1時間前</div></div>
+        <div class="news-item"><div class="news-tag">村上宗隆</div><div class="news-headline">村上、2試合連続本塁打でMLBデビューを飾る</div><div class="news-time">3時間前</div></div>
+        <div class="news-item"><div class="news-tag">大谷翔平</div><div class="news-headline">大谷、今季本塁打でドジャース勝利に貢献</div><div class="news-time">5時間前</div></div>
+        <div class="news-item"><div class="news-tag">山本由伸</div><div class="news-headline">山本、好投で今季4勝目をマーク</div><div class="news-time">6時間前</div></div>
+        <div class="news-item"><div class="news-tag">今永昇太</div><div class="news-headline">今永、快投でカブス快勝</div><div class="news-time">昨日</div></div>
+        <div class="news-item"><div class="news-tag">今井達也</div><div class="news-headline">今井、MLB初登板で鮮烈デビュー</div><div class="news-time">2日前</div></div>
+      </div>
+    </div>
+
+    <!-- STANDINGS — all divisions with tabs -->
+    <div class="sidebar-widget">
+      <div class="widget-header"><div class="widget-title" id="standingsTitle">MLB順位表</div></div>
+      <div class="standings-tabs" id="standingsTabs">
+        <button class="standings-tab active" onclick="showStandingsDiv('alE',this)" id="tabALE">AL東</button>
+        <button class="standings-tab" onclick="showStandingsDiv('alC',this)" id="tabALC">AL中</button>
+        <button class="standings-tab" onclick="showStandingsDiv('alW',this)" id="tabALW">AL西</button>
+        <button class="standings-tab" onclick="showStandingsDiv('nlE',this)" id="tabNLE">NL東</button>
+        <button class="standings-tab" onclick="showStandingsDiv('nlC',this)" id="tabNLC">NL中</button>
+        <button class="standings-tab" onclick="showStandingsDiv('nlW',this)" id="tabNLW">NL西</button>
+      </div>
+      <div id="standingsBody">
+        <div class="skeleton-pulse" style="height:120px;"></div>
+      </div>
+      <div class="standings-note" id="standingsNote">🇯🇵 = 日本人選手在籍チーム</div>
+    </div>
+
+    <!-- TEAM LEGEND -->
+    <div class="sidebar-widget">
+      <div class="widget-header"><div class="widget-title" id="teamLegendTitle">チーム別 日本人選手</div></div>
+      <div class="team-legend" id="teamLegend">
+        <div class="team-pill"><div class="team-dot" style="background:#003087;"></div>LAD (3名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#0E3386;"></div>CHC (2名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#2F241D;"></div>SD (2名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#BD3039;"></div>BOS (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#BA0021;"></div>LAA (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#002D72;"></div>NYM (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#DF4601;"></div>BAL (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#27251F;border:1px solid #999;"></div>CWS (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#002D62;"></div>HOU (1名)</div>
+        <div class="team-pill"><div class="team-dot" style="background:#134A8E;"></div>TOR (1名)</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">MLB JAPAN</div>
+    <div class="footer-links"><a href="#">プライバシーポリシー</a><a href="#">利用規約</a><a href="#">お問い合わせ</a><a href="#">広告掲載</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <div class="footer-legal">© 2026 MLB Japan Fan Hub. 選手・チーム成績はMLB Stats API（statsapi.mlb.com）より取得。データの無断転載を禁じます。ads@mlb-international.com</div>
+  <div style="font-family:var(--font-jp);font-size:11px;color:rgba(255,255,255,0.4);max-width:1280px;margin:12px auto 0;padding-top:10px;border-top:1px solid #1A3060;line-height:1.8;">
+    ご訪問ありがとうございます。私たちはMLBで活躍する日本人選手の成功をお届けすることに情熱を注いでいます。<br>
+    ご意見・ご感想は <a href="mailto:lovejapanbaseball@gmail.com" style="color:rgba(255,255,255,0.6);text-decoration:underline;">lovejapanbaseball@gmail.com</a> までお気軽にご連絡ください。
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+// === CONFIG ===
+const API_ENDPOINT   = 'https://mlb-japan-api.nicholasbruce1.workers.dev';
+const MLB_ENDPOINT   = `${API_ENDPOINT}/mlb`;
+const CURRENT_SEASON = 2026;
+const REFRESH_INTERVAL_MS = 60 * 60 * 1000;
+let nextRefreshTime  = Date.now() + REFRESH_INTERVAL_MS;
+
+// MLB team IDs for the 10 Japanese player teams
+const JP_TEAM_IDS = {
+  LAD:119, CHC:112, SD:135, BOS:111,
+  LAA:108, NYM:121, BAL:110, CWS:145, HOU:117, TOR:141
+};
+// Which players are on which team (for score annotations)
+const TEAM_JP_PLAYERS = {
+  LAD:['大谷翔平','山本由伸','佐々木朗希'],
+  CHC:['今永昇太','鈴木誠也'], SD:['ダルビッシュ有','松井裕樹'],
+  BOS:['吉田正尚'], LAA:['菊池雄星'], NYM:['千賀滉大'],
+  BAL:['菅野智之'], CWS:['村上宗隆'], HOU:['今井達也'], TOR:['岡本和真']
+};
+// Division IDs
+const DIVISIONS = {
+  alE:{id:201,label:'AL東',labelEN:'AL East'},
+  alC:{id:202,label:'AL中',labelEN:'AL Central'},
+  alW:{id:200,label:'AL西',labelEN:'AL West'},
+  nlE:{id:204,label:'NL東',labelEN:'NL East'},
+  nlC:{id:205,label:'NL中',labelEN:'NL Central'},
+  nlW:{id:203,label:'NL西',labelEN:'NL West'},
+};
+let currentStandingsDiv = 'alE';
+let standingsData = {};
+
+// === TEAM COLORS ===
+const TEAM_COLORS = {
+  LAD:{bg:'linear-gradient(135deg,#003087 0%,#001e5a 100%)',accent:'#EF3E42'},
+  CHC:{bg:'linear-gradient(135deg,#0E3386 0%,#07204f 100%)',accent:'#CC3433'},
+  BOS:{bg:'linear-gradient(135deg,#BD3039 0%,#7a1a20 100%)',accent:'#0C2340'},
+  SD: {bg:'linear-gradient(135deg,#2F241D 0%,#1a1410 100%)',accent:'#FFC425'},
+  LAA:{bg:'linear-gradient(135deg,#BA0021 0%,#800016 100%)',accent:'#003263'},
+  NYM:{bg:'linear-gradient(135deg,#002D72 0%,#001840 100%)',accent:'#FF5910'},
+  BAL:{bg:'linear-gradient(135deg,#DF4601 0%,#9a3000 100%)',accent:'#27251F'},
+  CWS:{bg:'linear-gradient(135deg,#27251F 0%,#111010 100%)',accent:'#C4CED4'},
+  HOU:{bg:'linear-gradient(135deg,#002D62 0%,#001838 100%)',accent:'#EB6E1F'},
+  TOR:{bg:'linear-gradient(135deg,#134A8E 0%,#0a2e5c 100%)',accent:'#E8291C'},
+};
+
+// === PLAYERS ===
+let players = [
+  {id:'yamamoto',mlbId:808967,nameJP:'山本 由伸',nameEN:'YOSHINOBU YAMAMOTO',team:'LAD',teamName:'Dodgers',number:18,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:true,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'登板ハイライト2026',q:'Yoshinobu Yamamoto pitching highlights 2026',kind:'player'},{title:'奪三振集',q:'Yamamoto strikeout compilation 2026 MLB',kind:'player'},{title:'ドジャース ベストプレー',q:'Los Angeles Dodgers best plays highlights 2026',kind:'team'},{title:'LAD 試合ダイジェスト',q:'Dodgers game highlights 2026 MLB',kind:'team'}]},
+  {id:'sasaki',mlbId:808963,nameJP:'佐々木 朗希',nameEN:'ROKI SASAKI',team:'LAD',teamName:'Dodgers',number:14,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'奪三振ハイライト',q:'Roki Sasaki strikeouts 2026 MLB highlights',kind:'player'},{title:'速球ベスト集',q:'Roki Sasaki fastest pitches 2026',kind:'player'},{title:'ドジャース ベストプレー',q:'Los Angeles Dodgers best plays highlights 2026',kind:'team'},{title:'LAD 試合ダイジェスト',q:'Dodgers game highlights 2026 MLB',kind:'team'}]},
+  {id:'imanaga',mlbId:684007,nameJP:'今永 昇太',nameEN:'SHOTA IMANAGA',team:'CHC',teamName:'Cubs',number:9,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'快投ハイライト',q:'Shota Imanaga strikeouts Cubs 2026',kind:'player'},{title:'チェンジアップ集',q:'Imanaga changeup highlights MLB 2026',kind:'player'},{title:'カブス ベストプレー',q:'Chicago Cubs best plays highlights 2026',kind:'team'},{title:'CHC 試合ダイジェスト',q:'Cubs game highlights 2026 MLB',kind:'team'}]},
+  {id:'darvish',mlbId:506433,nameJP:'ダルビッシュ 有',nameEN:'YU DARVISH',team:'SD',teamName:'Padres',number:11,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'変化球ハイライト',q:'Yu Darvish Padres 2026 pitching highlights',kind:'player'},{title:'奪三振集2026',q:'Yu Darvish strikeout compilation 2026',kind:'player'},{title:'パドレス ベストプレー',q:'San Diego Padres best plays highlights 2026',kind:'team'},{title:'SD 試合ダイジェスト',q:'Padres game highlights 2026 MLB',kind:'team'}]},
+  {id:'matsui',mlbId:673513,nameJP:'松井 裕樹',nameEN:'YUKI MATSUI',team:'SD',teamName:'Padres',number:37,position:'RP',positionJP:'リリーフ投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'セーブ'}],
+   highlights:[{title:'セーブシーン集',q:'Yuki Matsui Padres saves 2026 highlights',kind:'player'},{title:'速球スライダー集',q:'Yuki Matsui pitching 2026 best pitches',kind:'player'},{title:'パドレス ベストプレー',q:'San Diego Padres best plays highlights 2026',kind:'team'},{title:'SD 試合ダイジェスト',q:'Padres game highlights 2026 MLB',kind:'team'}]},
+  {id:'kikuchi',mlbId:579328,nameJP:'菊池 雄星',nameEN:'YUSEI KIKUCHI',team:'LAA',teamName:'Angels',number:16,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'登板ハイライト2026',q:'Yusei Kikuchi Angels 2026 pitching highlights',kind:'player'},{title:'カットボール集',q:'Yusei Kikuchi cutter highlights 2026',kind:'player'},{title:'エンゼルス ベストプレー',q:'Los Angeles Angels best plays highlights 2026',kind:'team'},{title:'LAA 試合ダイジェスト',q:'Angels game highlights 2026 MLB',kind:'team'}]},
+  {id:'senga',mlbId:673540,nameJP:'千賀 滉大',nameEN:'KODAI SENGA',team:'NYM',teamName:'Mets',number:21,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'お化けフォーク集',q:'Kodai Senga ghost fork splitter 2026 highlights',kind:'player'},{title:'奪三振コレクション',q:'Kodai Senga strikeouts compilation 2026',kind:'player'},{title:'メッツ ベストプレー',q:'New York Mets best plays highlights 2026',kind:'team'},{title:'NYM 試合ダイジェスト',q:'Mets game highlights 2026 MLB',kind:'team'}]},
+  {id:'sugano',mlbId:608372,nameJP:'菅野 智之',nameEN:'TOMOYUKI SUGANO',team:'BAL',teamName:'Orioles',number:34,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:false,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'登板ハイライト2026',q:'Tomoyuki Sugano Orioles 2026 pitching highlights',kind:'player'},{title:'制球力ハイライト',q:'Sugano Baltimore pitching 2026 MLB',kind:'player'},{title:'オリオールズ ベストプレー',q:'Baltimore Orioles best plays highlights 2026',kind:'team'},{title:'BAL 試合ダイジェスト',q:'Orioles game highlights 2026 MLB',kind:'team'}]},
+  {id:'imai',mlbId:837227,nameJP:'今井 達也',nameEN:'TATSUYA IMAI',team:'HOU',teamName:'Astros',number:45,position:'SP',positionJP:'先発投手',type:'pitcher',isNew:true,following:false,
+   stats:[{val:'—',key:'防御率'},{val:'—',key:'奪三振'},{val:'—',key:'勝敗'}],
+   highlights:[{title:'MLB初登板ハイライト',q:'Tatsuya Imai Astros MLB debut 2026 highlights',kind:'player'},{title:'速球スライダー集',q:'Tatsuya Imai best pitches 2026',kind:'player'},{title:'アストロズ ベストプレー',q:'Houston Astros best plays highlights 2026',kind:'team'},{title:'HOU 試合ダイジェスト',q:'Astros game highlights 2026 MLB',kind:'team'}]},
+  {id:'ohtani',mlbId:660271,nameJP:'大谷 翔平',nameEN:'SHOHEI OHTANI',team:'LAD',teamName:'Dodgers',number:17,position:'DH',positionJP:'指名打者',type:'hitter',isNew:false,following:true,
+   stats:[{val:'—',key:'打率'},{val:'—',key:'本塁打'},{val:'—',key:'打点'}],
+   highlights:[{title:'今季本塁打ハイライト',q:'Shohei Ohtani home run 2026 MLB highlights',kind:'player'},{title:'スーパープレー集',q:'Ohtani best plays week 2026 MLB',kind:'player'},{title:'ドジャース ベストプレー',q:'Los Angeles Dodgers best plays highlights 2026',kind:'team'},{title:'LAD 試合ダイジェスト',q:'Dodgers game highlights 2026 MLB',kind:'team'}]},
+  {id:'suzuki',mlbId:673548,nameJP:'鈴木 誠也',nameEN:'SEIYA SUZUKI',team:'CHC',teamName:'Cubs',number:27,position:'RF',positionJP:'右翼手',type:'hitter',isNew:false,following:false,
+   stats:[{val:'—',key:'打率'},{val:'—',key:'本塁打'},{val:'—',key:'打点'}],
+   highlights:[{title:'本塁打ハイライト',q:'Seiya Suzuki home run 2026 Cubs highlights',kind:'player'},{title:'打撃ハイライト集',q:'Seiya Suzuki batting highlights 2026 MLB',kind:'player'},{title:'カブス ベストプレー',q:'Chicago Cubs best plays highlights 2026',kind:'team'},{title:'CHC 試合ダイジェスト',q:'Cubs game highlights 2026 MLB',kind:'team'}]},
+  {id:'yoshida',mlbId:807799,nameJP:'吉田 正尚',nameEN:'MASATAKA YOSHIDA',team:'BOS',teamName:'Red Sox',number:7,position:'DH',positionJP:'指名打者',type:'hitter',isNew:false,following:false,
+   stats:[{val:'—',key:'打率'},{val:'—',key:'本塁打'},{val:'—',key:'打点'}],
+   highlights:[{title:'本塁打ハイライト',q:'Masataka Yoshida home run 2026 Red Sox highlights',kind:'player'},{title:'打撃ハイライト集',q:'Yoshida Red Sox batting 2026 highlights',kind:'player'},{title:'レッドソックス ベストプレー',q:'Boston Red Sox best plays highlights 2026',kind:'team'},{title:'BOS 試合ダイジェスト',q:'Red Sox game highlights 2026 MLB',kind:'team'}]},
+  {id:'murakami',mlbId:808959,nameJP:'村上 宗隆',nameEN:'MUNETAKA MURAKAMI',team:'CWS',teamName:'White Sox',number:5,position:'1B/3B',positionJP:'一塁手',type:'hitter',isNew:true,following:false,
+   stats:[{val:'—',key:'打率'},{val:'—',key:'本塁打'},{val:'—',key:'打点'}],
+   highlights:[{title:'MLB初本塁打ハイライト',q:'Munetaka Murakami White Sox MLB debut home run 2026',kind:'player'},{title:'ホームラン集',q:'Murakami White Sox home runs 2026 highlights',kind:'player'},{title:'ホワイトソックス ベストプレー',q:'Chicago White Sox best plays highlights 2026',kind:'team'},{title:'CWS 試合ダイジェスト',q:'White Sox game highlights 2026 MLB',kind:'team'}]},
+  {id:'okamoto',mlbId:672960,nameJP:'岡本 和真',nameEN:'KAZUMA OKAMOTO',team:'TOR',teamName:'Blue Jays',number:7,position:'1B/3B',positionJP:'内野手',type:'hitter',isNew:true,following:false,
+   stats:[{val:'—',key:'打率'},{val:'—',key:'本塁打'},{val:'—',key:'打点'}],
+   highlights:[{title:'MLB初本塁打',q:'Kazuma Okamoto Blue Jays first home run MLB 2026',kind:'player'},{title:'打撃ハイライト',q:'Okamoto Blue Jays batting highlights 2026',kind:'player'},{title:'ブルージェイズ ベストプレー',q:'Toronto Blue Jays best plays highlights 2026',kind:'team'},{title:'TOR 試合ダイジェスト',q:'Blue Jays game highlights 2026 MLB',kind:'team'}]},
+];
+
+const followingSet = new Set(players.filter(p=>p.following).map(p=>p.id));
+
+// ============================================================
+// REAL MLB STATS — PLAYERS
+// ============================================================
+function parsePitcherStats(stat) {
+  const era=stat.era?parseFloat(stat.era).toFixed(2):'—';
+  const so=stat.strikeOuts!==undefined?stat.strikeOuts:'—';
+  const w=stat.wins||0; const l=stat.losses||0;
+  const sv=stat.saves!==undefined?stat.saves:null;
+  if(sv!==null&&sv>0) return [{val:era,key:'防御率'},{val:String(so),key:'奪三振'},{val:String(sv),key:'セーブ'}];
+  return [{val:era,key:'防御率'},{val:String(so),key:'奪三振'},{val:`${w}-${l}`,key:'勝敗'}];
+}
+function parseHitterStats(stat) {
+  return [{val:stat.avg||'—',key:'打率'},{val:String(stat.homeRuns??'—'),key:'本塁打'},{val:String(stat.rbi??'—'),key:'打点'}];
+}
+async function fetchPlayerStats(player) {
+  const group=player.type==='pitcher'?'pitching':'hitting';
+  const res=await fetch(`${MLB_ENDPOINT}/api/v1/people/${player.mlbId}/stats?stats=season&season=${CURRENT_SEASON}&group=${group}`);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data=await res.json();
+  const splits=data?.stats?.[0]?.splits;
+  if(!splits||!splits.length) throw new Error('No splits');
+  return player.type==='pitcher'?parsePitcherStats(splits[0].stat):parseHitterStats(splits[0].stat);
+}
+async function fetchAllRealStats(silent=false) {
+  const dot=document.getElementById('refreshDot');
+  const statusText=document.getElementById('refreshStatusText');
+  const btn=document.getElementById('refreshBtn');
+  if(!silent){dot.classList.add('loading');statusText.textContent=T.updatingText||'データを更新中...';btn.disabled=true;btn.textContent=T.updatingBtn||'更新中...';}
+  const results=await Promise.allSettled(players.map(p=>fetchPlayerStats(p).then(stats=>({id:p.id,stats}))));
+  let updated=0;
+  results.forEach(r=>{
+    if(r.status==='fulfilled'){const{id,stats}=r.value;const idx=players.findIndex(p=>p.id===id);if(idx!==-1&&stats){players[idx].stats=stats;updated++;}}
+  });
+  if(updated>0){renderPlayers(players);enCache=null;updateHeroStats();}
+  const now=new Date();
+  document.getElementById('lastUpdatedText').textContent=`${T.lastUpdatedPrefix||'最終更新: '}${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  if(!silent){dot.classList.remove('loading');statusText.textContent=T.refreshStatus||'ライブデータ取得中';btn.disabled=false;btn.textContent=T.refreshBtn||'⟳ 今すぐ更新';showToast(updated>0?(T.toastSuccess||'✅ データを更新しました！'):'⚠ 一部のデータを取得できませんでした');}
+  nextRefreshTime=Date.now()+REFRESH_INTERVAL_MS;
+}
+function updateHeroStats() {
+  const o=players.find(p=>p.id==='ohtani');const y=players.find(p=>p.id==='yamamoto');const m=players.find(p=>p.id==='murakami');
+  const oEl=document.getElementById('heroOhtaniStat');const yEl=document.getElementById('heroYamamotoStat');const mEl=document.getElementById('heroMurakamiStat');
+  if(oEl&&o?.stats[0])oEl.textContent=o.stats[0].val;
+  if(yEl&&y?.stats[0])yEl.textContent=y.stats[0].val;
+  if(mEl&&m?.stats[0])mEl.textContent=m.stats[0].val;
+}
+
+// ============================================================
+// LIVE SCORES — games today involving JP team IDs
+// ============================================================
+function todayDateStr() {
+  // Japan time (UTC+9)
+  const d=new Date(Date.now()+9*3600000);
+  return d.toISOString().slice(0,10);
+}
+async function fetchScores() {
+  const date=todayDateStr();
+  const jpIds=Object.values(JP_TEAM_IDS).join(',');
+  // Fetch schedules for today for all 30 teams, then filter
+  const url=`${MLB_ENDPOINT}/api/v1/schedule?sportId=1&date=${date}&hydrate=linescore,team`;
+  try {
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const games=(data.dates?.[0]?.games||[]);
+    // Filter: at least one team is a JP player team
+    const jpTeamIdSet=new Set(Object.values(JP_TEAM_IDS));
+    const jpGames=games.filter(g=>jpTeamIdSet.has(g.teams?.home?.team?.id)||jpTeamIdSet.has(g.teams?.away?.team?.id));
+    renderScores(jpGames);
+  } catch(e) {
+    console.warn('Scores fetch failed:',e);
+    document.getElementById('scoresGrid').innerHTML=`<div class="scores-empty">スコアを取得できませんでした。しばらくお待ちください。</div>`;
+  }
+}
+function renderScores(games) {
+  const grid=document.getElementById('scoresGrid');
+  if(!games.length){
+    grid.innerHTML=`<div class="scores-empty">${currentLang==='en'?'No games today for Japanese player teams.':'本日、日本人選手チームの試合はありません。'}</div>`;
+    return;
+  }
+  grid.innerHTML=games.map(g=>{
+    const home=g.teams.home; const away=g.teams.away;
+    const homeAbbr=home.team.abbreviation; const awayAbbr=away.team.abbreviation;
+    const homeScore=home.score??'—'; const awayScore=away.score??'—';
+    const status=g.status.detailedState;
+    const statusJP=statusToJP(status);
+    // Format game time in JST
+    const gameTime=g.gameDate?formatJST(g.gameDate):'';
+    // JP player notes
+    const homeNote=(TEAM_JP_PLAYERS[homeAbbr]||[]).join('・');
+    const awayNote=(TEAM_JP_PLAYERS[awayAbbr]||[]).join('・');
+    const noteJP=[homeNote,awayNote].filter(Boolean).join(' vs ');
+    const isJPHome=!!JP_TEAM_IDS[homeAbbr]; const isJPAway=!!JP_TEAM_IDS[awayAbbr];
+    const highlight=isJPHome||isJPAway;
+    const liveInning=g.status.abstractGameState==='Live'&&g.linescore?.currentInningOrdinal?`<span style="color:#22c55e;font-weight:700;">${g.linescore.currentInningOrdinal}</span>`:'';
+    return `<div class="score-card${highlight?' highlight':''}">
+      <div class="score-team home">
+        <div class="team-abbr">${homeAbbr}</div>
+        <div class="team-name-sc">${home.team.teamName}${isJPHome?'<span class="jp-flag"></span>':''}</div>
+      </div>
+      <div class="score-mid">
+        <div class="score-nums"><span class="score-num">${homeScore}</span><span class="score-sep">–</span><span class="score-num">${awayScore}</span></div>
+        <div class="score-status">${liveInning||statusJP}</div>
+        <div class="score-time-jp">${gameTime}</div>
+        ${noteJP?`<div class="jp-note">${noteJP}</div>`:''}
+      </div>
+      <div class="score-team away">
+        <div class="team-abbr">${awayAbbr}</div>
+        <div class="team-name-sc">${away.team.teamName}${isJPAway?'<span class="jp-flag"></span>':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function statusToJP(s) {
+  if(!s)return'—';
+  const m=s.toLowerCase();
+  if(m.includes('final'))return currentLang==='en'?'Final':'終了';
+  if(m.includes('progress')||m.includes('live'))return currentLang==='en'?'Live':'試合中';
+  if(m.includes('warm'))return currentLang==='en'?'Pre-game':'試合前';
+  if(m.includes('postpone'))return currentLang==='en'?'Postponed':'延期';
+  if(m.includes('cancel'))return currentLang==='en'?'Cancelled':'中止';
+  if(m.includes('schedul')||m.includes('preview'))return currentLang==='en'?'Scheduled':'予定';
+  return s;
+}
+function formatJST(iso) {
+  const d=new Date(iso);
+  const jst=new Date(d.getTime()+9*3600000);
+  const days=currentLang==='en'?['Sun','Mon','Tue','Wed','Thu','Fri','Sat']:['日','月','火','水','木','金','土'];
+  const day=days[jst.getUTCDay()];
+  const h=jst.getUTCHours(); const m=String(jst.getUTCMinutes()).padStart(2,'0');
+  const mo=jst.getUTCMonth()+1; const dt=jst.getUTCDate();
+  return `${day} ${mo}/${dt} ${h}:${m} JST`;
+}
+
+// ============================================================
+// LIVE STANDINGS — all 6 divisions
+// ============================================================
+async function fetchStandings() {
+  try {
+    // Fetch all divisions in one call
+    const divIds=Object.values(DIVISIONS).map(d=>d.id).join(',');
+    const url=`${MLB_ENDPOINT}/api/v1/standings?leagueId=103,104&season=${CURRENT_SEASON}&standingsTypes=regularSeason`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    // Map division ID → records
+    standingsData={};
+    (data.records||[]).forEach(record=>{
+      const divId=record.division?.id;
+      const key=Object.keys(DIVISIONS).find(k=>DIVISIONS[k].id===divId);
+      if(key) standingsData[key]=record.teamRecords||[];
+    });
+    renderStandingsDiv(currentStandingsDiv);
+  } catch(e) {
+    console.warn('Standings fetch failed:',e);
+    document.getElementById('standingsBody').innerHTML='<div style="padding:12px;font-family:var(--font-jp);font-size:11px;color:var(--muted);">順位表を取得できませんでした。</div>';
+  }
+}
+function showStandingsDiv(key, btn) {
+  currentStandingsDiv=key;
+  document.querySelectorAll('.standings-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderStandingsDiv(key);
+}
+// Full MLB team ID → abbreviation lookup (API doesn't return abbreviation in standings)
+const TEAM_ID_TO_ABBR = {
+  108:'LAA',109:'OAK',110:'BAL',111:'BOS',112:'CHC',113:'CIN',114:'CLE',
+  115:'COL',116:'DET',117:'HOU',118:'KC', 119:'LAD',120:'WSH',121:'NYM',
+  133:'OAK',134:'PIT',135:'SD', 136:'SEA',137:'SF', 138:'STL',139:'TB',
+  140:'TEX',141:'TOR',142:'MIN',143:'PHI',144:'ATL',145:'CWS',146:'MIA',
+  147:'NYY',158:'MIL',
+};
+
+function renderStandingsDiv(key) {
+  const records=standingsData[key]||[];
+  const jpTeamAbbrs=new Set(Object.keys(JP_TEAM_IDS));
+  const body=document.getElementById('standingsBody');
+  if(!records.length){body.innerHTML='<div style="padding:12px;font-family:var(--font-jp);font-size:11px;color:var(--muted);">データ取得中...</div>';return;}
+  body.innerHTML=`<table class="standings-table">
+    <thead><tr><th>#</th><th>${currentLang==='en'?'Team':'チーム'}</th><th>W</th><th>L</th><th>PCT</th></tr></thead>
+    <tbody>${records.slice(0,5).map((r,i)=>{
+      const teamId=r.team?.id;
+      const abbr=TEAM_ID_TO_ABBR[teamId]||r.team?.abbreviation||r.team?.name?.slice(0,3).toUpperCase()||'—';
+      const isJP=jpTeamAbbrs.has(abbr);
+      const pct=r.winningPercentage||'.000';
+      return `<tr>
+        <td><span class="rank${i===0?' top':''}">${i+1}</span></td>
+        <td>${abbr}${isJP?'<span class="jp-flag"></span>':''}</td>
+        <td>${r.wins||0}</td>
+        <td>${r.losses||0}</td>
+        <td class="win-pct">${pct}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+// ============================================================
+// LIVE SCHEDULE — next 7 days, JP teams only
+// ============================================================
+async function fetchSchedule() {
+  try {
+    const startDate=todayDateStr();
+    // Get next 7 days
+    const end=new Date(Date.now()+7*86400000+9*3600000);
+    const endDate=end.toISOString().slice(0,10);
+    const url=`${MLB_ENDPOINT}/api/v1/schedule?sportId=1&startDate=${startDate}&endDate=${endDate}&hydrate=team`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    const jpTeamIdSet=new Set(Object.values(JP_TEAM_IDS));
+    const upcoming=[];
+    (data.dates||[]).forEach(dateObj=>{
+      (dateObj.games||[]).forEach(g=>{
+        const homeId=g.teams?.home?.team?.id;
+        const awayId=g.teams?.away?.team?.id;
+        if(jpTeamIdSet.has(homeId)||jpTeamIdSet.has(awayId)){
+          const state=g.status?.abstractGameState;
+          if(state!=='Final') upcoming.push({...g,dateStr:dateObj.date});
+        }
+      });
+    });
+    renderSchedule(upcoming.slice(0,6));
+  } catch(e) {
+    console.warn('Schedule fetch failed:',e);
+  }
+}
+function renderSchedule(games) {
+  const list=document.getElementById('scheduleList');
+  if(!games.length){list.innerHTML=`<div class="scores-empty">${currentLang==='en'?'No upcoming games found.':'試合日程を取得できませんでした。'}</div>`;return;}
+  list.innerHTML=games.map(g=>{
+    const home=g.teams.home; const away=g.teams.away;
+    const homeAbbr=home.team.abbreviation; const awayAbbr=away.team.abbreviation;
+    const homeName=home.team.teamName; const awayName=away.team.teamName;
+    const timeStr=formatJST(g.gameDate);
+    const parts=timeStr.split(' ');
+    const dayDate=parts.slice(0,2).join(' ');
+    const hm=parts[2];
+    const homeNote=(TEAM_JP_PLAYERS[homeAbbr]||[]).join('・');
+    const awayNote=(TEAM_JP_PLAYERS[awayAbbr]||[]).join('・');
+    const noteJP=[homeNote,awayNote].filter(Boolean).join(' vs ');
+    const flag=currentLang==='en'?'Featured':'注目';
+    return `<div class="schedule-item">
+      <div class="schedule-time">${hm}<small>${dayDate} JST</small></div>
+      <div class="schedule-matchup">${homeAbbr} ${homeName} vs ${awayAbbr} ${awayName}${noteJP?`<small style="color:var(--red);">${noteJP}</small>`:''}
+      </div>
+      <div class="schedule-flag">${flag}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// LANGUAGE SYSTEM
+// ============================================================
+let currentLang='jp';
+let enCache=null;
+
+const EN_FIXED={
+  statKeys:{'打率':'AVG','本塁打':'HR','打点':'RBI','防御率':'ERA','奪三振':'SO','勝敗':'W-L','セーブ':'SV'},
+  positionNames:{'指名打者':'Designated Hitter','先発投手':'Starting Pitcher','リリーフ投手':'Relief Pitcher','右翼手':'Right Field','一塁手':'First Base','内野手':'Infield'},
+  scoresEN:"TODAY'S SCORES",playersEN:'JAPANESE PLAYERS 2026',gamesEN:'UPCOMING GAMES',
+  pitchersEN:'PITCHERS',hittersEN:'POSITION PLAYERS',newBadge:'NEW',scheduleFlag:'Featured',
+  followBtn:'+ Follow',followingBtn:'✓ Following',highlightsBtn:'Highlights',
+  toastSuccess:'✅ Stats refreshed!',toastError:'⚠ Refresh failed.',
+  updatingText:'Refreshing data...',updatingBtn:'Refreshing...',lastUpdatedPrefix:'Updated: ',
+  seeAllScores:'See all →',seeAllGames:'Full schedule →',seeAllNews:'All news →',
+  seeAllStandings:'All divisions →',standingsColTeam:'Team',
+  standingsNote:'🇯🇵 = Team with Japanese player(s)',
+  notifyBtn:'🔔 Notify Me',refreshBtn:'⟳ Refresh Now',
+  nextUpdateLabel:'Next update in: ',refreshStatus:'Live data active',
+};
+
+const JP={
+  logoSubtitle:'日本語メジャーリーグ情報',navLinks:['ホーム','スコア','選手','日程','ニュース'],
+  notifyBtn:'🔔 通知',refreshStatus:'ライブデータ取得中',nextUpdateLabel:'次回更新まで: ',
+  refreshBtn:'⟳ 今すぐ更新',
+  heroTag:'2026 MLBシーズン',heroStatLabels:['日本人選手','2026新加入','所属チーム'],
+  scoresEN:"TODAY'S SCORES",scoresJP:'日本人チームの本日スコア',seeAllScores:'すべて見る →',
+  playersEN:'JAPANESE PLAYERS 2026',sectionPlayersJP:'MLB在籍 日本人選手 全{n}名',
+  gamesEN:'UPCOMING GAMES',gamesJP:'注目の試合日程（JST）',seeAllGames:'全日程 →',
+  pitchersEN:'PITCHERS',pitchersJP:'投手陣（先発・リリーフ）',
+  hittersEN:'POSITION PLAYERS',hittersJP:'野手陣（打者・外野手）',
+  followBtn:'+ フォローする',followingBtn:'✓ フォロー中',
+  highlightsBtn:'ハイライト動画',newBadge:'NEW',
+  newsItems:[
+    {tag:'岡本和真',headline:'岡本、MLB初本塁打！420フィートの特大アーチ',time:'1時間前'},
+    {tag:'村上宗隆',headline:'村上、2試合連続本塁打でMLBデビューを飾る',time:'3時間前'},
+    {tag:'大谷翔平',headline:'大谷、今季本塁打でドジャース勝利に貢献',time:'5時間前'},
+    {tag:'山本由伸',headline:'山本、好投で今季4勝目をマーク',time:'6時間前'},
+    {tag:'今永昇太',headline:'今永、快投でカブス快勝',time:'昨日'},
+    {tag:'今井達也',headline:'今井、MLB初登板で鮮烈デビュー',time:'2日前'},
+  ],
+  newsTitle:'最新ニュース',seeAllNews:'全て →',
+  standingsTitle:'MLB順位表',seeAllStandings:'全地区 →',standingsColTeam:'チーム',
+  teamLegendTitle:'チーム別 日本人選手',standingsNote:'🇯🇵 = 日本人選手在籍チーム',
+  toastSuccess:'✅ データを更新しました！',toastError:'⚠ 更新に失敗しました。',
+  updatingText:'データを更新中...',updatingBtn:'更新中...',lastUpdatedPrefix:'最終更新: ',
+  statKeys:{'打率':'打率','本塁打':'本塁打','打点':'打点','防御率':'防御率','奪三振':'奪三振','勝敗':'勝敗','セーブ':'セーブ'},
+  positionNames:{'指名打者':'指名打者','先発投手':'先発投手','リリーフ投手':'リリーフ投手','右翼手':'右翼手','一塁手':'一塁手','内野手':'内野手'},
+};
+let T=JP;
+
+function applyT(t) {
+  T=t;
+  const $=id=>document.getElementById(id);
+  const set=(id,val,html=false)=>{const el=$(id);if(el){if(html)el.innerHTML=val;else el.textContent=val;}};
+  set('logoSubtitle',t.logoSubtitle);
+  ['navHome','navScores','navPlayers','navSchedule','navNews'].forEach((id,i)=>set(id,t.navLinks[i]));
+  set('notifyBtn',t.notifyBtn);set('refreshStatusText',t.refreshStatus);
+  set('nextUpdateLabel',t.nextUpdateLabel);set('refreshBtn',t.refreshBtn);
+  set('heroTag',t.heroTag);[0,1,2].forEach(i=>set(`heroLabel${i}`,t.heroStatLabels[i]));
+  set('sectionScoresEN',t.scoresEN);set('sectionScoresJP',t.scoresJP);
+  set('sectionPlayersEN',t.playersEN);set('sectionGamesEN',t.gamesEN);set('sectionGamesJP',t.gamesJP);
+  set('newsWidgetTitle',t.newsTitle);
+  set('standingsTitle',t.standingsTitle);
+  set('teamLegendTitle',t.teamLegendTitle);set('standingsNote',t.standingsNote);
+  // Standings tabs
+  const tabMap={alE:'tabALE',alC:'tabALC',alW:'tabALW',nlE:'tabNLE',nlC:'tabNLC',nlW:'tabNLW'};
+  Object.keys(tabMap).forEach(k=>{
+    const el=$(tabMap[k]);
+    if(el) el.textContent=currentLang==='en'?DIVISIONS[k].labelEN:DIVISIONS[k].label;
+  });
+  // News
+  const newsEl=$('newsWidget');
+  if(newsEl&&t.newsItems) newsEl.innerHTML=t.newsItems.map(item=>`<div class="news-item"><div class="news-tag">${item.tag}</div><div class="news-headline">${item.headline}</div><div class="news-time">${item.time}</div></div>`).join('');
+  const luEl=$('lastUpdatedText');
+  if(luEl){const time=luEl.textContent.replace(/^[^:：]+[:：]\s*/,'');luEl.textContent=t.lastUpdatedPrefix+time;}
+  // Re-render live sections in correct language
+  renderStandingsDiv(currentStandingsDiv);
+}
+
+async function fetchEnglishTranslations() {
+  const toTranslate=[
+    JP.logoSubtitle,...JP.navLinks,JP.heroTag,...JP.heroStatLabels,
+    JP.scoresJP,JP.gamesJP,JP.pitchersJP,JP.hittersJP,
+    JP.teamLegendTitle,JP.standingsTitle,JP.newsTitle,
+    ...JP.newsItems.map(n=>n.headline),...JP.newsItems.map(n=>n.time),
+  ];
+  const res=await fetch(`${API_ENDPOINT}/translate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({strings:toTranslate,source:'ja',target:'en'})});
+  if(!res.ok) throw new Error(`Translate HTTP ${res.status}`);
+  const{translations}=await res.json();
+  let i=0;const t=(n=1)=>{const r=translations.slice(i,i+n);i+=n;return n===1?r[0]:r;};
+  return {
+    ...EN_FIXED,
+    logoSubtitle:t(),navLinks:t(5),heroTag:t(),heroStatLabels:t(3),
+    scoresJP:t(),gamesJP:t(),pitchersJP:t(),hittersJP:t(),
+    teamLegendTitle:t(),standingsTitle:t(),newsTitle:t(),
+    sectionPlayersJP:'All {n} Japanese MLB Players',
+    newsItems:JP.newsItems.map((item,idx)=>({tag:item.tag,headline:translations[i-JP.newsItems.length*2+idx]||item.headline,time:translations[i-JP.newsItems.length+idx]||item.time})),
+  };
+}
+
+async function switchLanguage(lang) {
+  if(lang===currentLang)return;
+  const langBtns=document.querySelectorAll('.lang-btn');
+  if(lang==='en'){
+    langBtns.forEach(b=>b.disabled=true);langBtns[1].textContent='...';
+    showToast('🔄 Translating...');
+    try{
+      if(!enCache)enCache=await fetchEnglishTranslations();
+      currentLang='en';applyT(enCache);renderPlayers(players);updateTicker(players);
+      renderScores([]); fetchScores(); fetchSchedule();
+      langBtns[0].classList.remove('active');langBtns[1].classList.add('active');langBtns[1].textContent='EN';
+      showToast('✅ Switched to English!');
+    }catch(e){showToast('⚠ Translation failed.');langBtns[0].classList.add('active');langBtns[1].classList.remove('active');langBtns[1].textContent='EN';}
+    langBtns.forEach(b=>b.disabled=false);
+  } else {
+    currentLang='jp';applyT(JP);renderPlayers(players);updateTicker(players);
+    fetchScores();fetchSchedule();
+    langBtns[0].classList.add('active');langBtns[1].classList.remove('active');
+  }
+}
+
+// ============================================================
+// RENDER PLAYER CARDS
+// ============================================================
+function renderCard(player) {
+  const colors=TEAM_COLORS[player.team]||{bg:'linear-gradient(135deg,#E8EEF8,#D0DCEE)',accent:'#CC1818'};
+  const isFollowing=followingSet.has(player.id);
+  const posName=(T.positionNames&&T.positionNames[player.positionJP])?T.positionNames[player.positionJP]:player.positionJP;
+  const newBadge=player.isNew?`<span class="new-badge">${T.newBadge||'NEW'}</span>`:'';
+  const statsHTML=player.stats.map(s=>`<div class="player-stat-item"><div class="player-stat-val">${s.val}</div><div class="player-stat-key">${(T.statKeys&&T.statKeys[s.key])||s.key}</div></div>`).join('');
+  const playerHL=player.highlights.filter(h=>h.kind==='player');
+  const teamHL=player.highlights.filter(h=>h.kind==='team');
+  const makeLinks=list=>list.map(h=>`<a class="highlight-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(h.q)}" target="_blank" rel="noopener"><span class="yt">▶</span>${h.title}</a>`).join('');
+  const highlightsHTML=`<div class="hl-group-label player-hl-label">👤 ${currentLang==='en'?'Player':'選手'}</div>${makeLinks(playerHL)}<div class="hl-group-label team-hl-label" style="margin-top:3px;">🏟️ ${player.teamName}</div>${makeLinks(teamHL)}`;
+  return `<div class="player-card${player.isNew?' new-2026':''}" data-id="${player.id}">
+    <div class="player-card-header" data-num="${player.number}" style="background:${colors.bg};">
+      <div class="header-stripe" style="background:${colors.accent};"></div>
+      <div class="player-position" style="color:${colors.accent};">${player.position} · ${posName} ${newBadge}</div>
+      <div class="player-name-jp">${player.nameJP}</div>
+      <div class="player-name-en">${player.nameEN}</div>
+      <div class="player-team-badge">${player.team} · ${player.teamName}</div>
+    </div>
+    <div class="player-card-stats">${statsHTML}</div>
+    <div class="highlights-section">
+      <button class="highlights-toggle" onclick="toggleHighlights(this)">
+        <span><span class="yt-icon">▶</span> ${T.highlightsBtn||'ハイライト動画'}</span>
+        <span class="toggle-arrow">▼</span>
+      </button>
+      <div class="highlights-links">${highlightsHTML}</div>
+    </div>
+    <button class="player-follow-btn${isFollowing?' following':''}" onclick="toggleFollow('${player.id}',this)">
+      ${isFollowing?(T.followingBtn||'✓ フォロー中'):(T.followBtn||'+ フォローする')}
+    </button>
+  </div>`;
+}
+
+function renderPlayers(data) {
+  const pitchers=data.filter(p=>p.type==='pitcher');
+  const hitters=data.filter(p=>p.type==='hitter');
+  const newCount=data.filter(p=>p.isNew).length;
+  const teams=new Set(data.map(p=>p.team)).size;
+  document.getElementById('heroTotal').textContent=data.length;
+  document.getElementById('heroPlayerCount').textContent=data.length;
+  document.getElementById('heroNew').textContent=newCount;
+  document.getElementById('heroTeams').textContent=teams;
+  const spJP=document.getElementById('sectionPlayersJP');
+  if(spJP&&T.sectionPlayersJP)spJP.innerHTML=T.sectionPlayersJP.replace('{n}',`<span id="totalPlayerCountLabel">${data.length}</span>`);
+  document.getElementById('playersContainer').innerHTML=`
+    <div class="player-section">
+      <div class="player-section-header">
+        <span class="player-section-icon">🏟️</span>
+        <div><div class="player-section-title-en">${T.pitchersEN||'PITCHERS'}</div><div class="player-section-title-jp">${T.pitchersJP||'投手陣'}</div></div>
+        <div class="player-section-badge">${pitchers.length}</div>
+      </div>
+      <div class="players-grid">${pitchers.map(renderCard).join('')}</div>
+    </div>
+    <div class="player-section">
+      <div class="player-section-header">
+        <span class="player-section-icon">⚾</span>
+        <div><div class="player-section-title-en">${T.hittersEN||'POSITION PLAYERS'}</div><div class="player-section-title-jp">${T.hittersJP||'野手陣'}</div></div>
+        <div class="player-section-badge">${hitters.length}</div>
+      </div>
+      <div class="players-grid">${hitters.map(renderCard).join('')}</div>
+    </div>`;
+  updateTicker(data);
+}
+
+function updateTicker(data) {
+  const inner=document.getElementById('tickerInner');
+  const items=data.map(p=>{
+    const s=p.stats[0];const newTag=p.isNew?' 🆕':'';
+    const name=currentLang==='en'?p.nameEN.split(' ').map((w,i)=>i===0?w:w.charAt(0)+'.').join(' '):p.nameJP;
+    const key=(T.statKeys&&T.statKeys[s.key])?T.statKeys[s.key]:s.key;
+    return `<span>${name} ${p.team} · ${key} ${s.val}${newTag}</span>`;
+  }).join('');
+  inner.innerHTML=items+items;
+}
+
+function toggleHighlights(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');}
+function toggleFollow(id,btn){
+  if(followingSet.has(id)){followingSet.delete(id);btn.classList.remove('following');btn.textContent=T.followBtn||'+ フォローする';}
+  else{followingSet.add(id);btn.classList.add('following');btn.textContent=T.followingBtn||'✓ フォロー中';}
+}
+
+// ============================================================
+// HOURLY REFRESH
+// ============================================================
+async function triggerRefresh() {
+  await Promise.all([fetchAllRealStats(false),fetchScores(),fetchStandings(),fetchSchedule()]);
+  refreshHighlights();
+}
+
+async function refreshHighlights() {
+  try {
+    const response=await fetch(`${API_ENDPOINT}/anthropic`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,
+        system:'You are an MLB highlights assistant. Return ONLY valid JSON. Shape: {"players":[{"id":"string","highlights":[{"title":"string(Japanese)","q":"string(English YouTube query)","kind":"player"},{"title":"string","q":"string","kind":"player"},{"title":"string","q":"string","kind":"team"},{"title":"string","q":"string","kind":"team"}]}]}',
+        messages:[{role:'user',content:`MLB 2026. Update YouTube highlight queries:\n${players.map(p=>`id:${p.id}|${p.nameEN}|${p.team}|${p.type}`).join('\n')}\nReturn JSON only.`}]
+      })
+    });
+    const data=await response.json();
+    const text=data.content?.find(c=>c.type==='text')?.text||'';
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(parsed.players){
+      parsed.players.forEach(u=>{
+        const idx=players.findIndex(p=>p.id===u.id);
+        if(idx!==-1&&u.highlights?.length>=2)players[idx].highlights=u.highlights.map((h,i)=>({...h,kind:h.kind||(i<2?'player':'team')}));
+      });
+      renderPlayers(players);enCache=null;
+    }
+  } catch(e){console.warn('Highlights refresh error:',e);}
+}
+
+// ============================================================
+// COUNTDOWN + TOAST
+// ============================================================
+function updateCountdown() {
+  const remaining=Math.max(0,nextRefreshTime-Date.now());
+  const mins=Math.floor(remaining/60000);const secs=Math.floor((remaining%60000)/1000);
+  document.getElementById('countdownEl').textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  if(remaining===0)triggerRefresh();
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderPlayers(players);
+const initTime=new Date();
+document.getElementById('lastUpdatedText').textContent=`${JP.lastUpdatedPrefix}${initTime.getHours()}:${String(initTime.getMinutes()).padStart(2,'0')}`;
+setInterval(updateCountdown,1000);
+
+// Fetch all live data on load
+Promise.all([
+  fetchAllRealStats(true).catch(e=>console.warn('Player stats failed:',e)),
+  fetchScores().catch(e=>console.warn('Scores failed:',e)),
+  fetchStandings().catch(e=>console.warn('Standings failed:',e)),
+  fetchSchedule().catch(e=>console.warn('Schedule failed:',e)),
+]);
+
+// Hourly refresh
+setInterval(triggerRefresh,REFRESH_INTERVAL_MS);
+</script>
+</body>
+</html>
